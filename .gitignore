@@ -17,3 +17,5 @@ test/version_tmp
 tmp
 
 config/isbndb.yml
+
+lib/config/isbndb.yml

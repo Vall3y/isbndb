@@ -21,13 +21,17 @@ module ISBNdb
       @collection = collection.to_s.titleize.singularize
       @current_page = current_page
       @parsed_response = self.class.get(@uri).parsed_response['ISBNdb']
-
+      
       check_results
       build_results
     end
 
     def size
       @results.size
+    end
+
+    def current_page
+      @current_page
     end
 
     # Because ResultSet extends Enumerable, we need to define the each method. This allows users
@@ -68,6 +72,13 @@ module ISBNdb
       self.size == result_set.size && self.instance_variable_get('@results') == result_set.instance_variable_get('@results')
     end
 
+    # This helper method is mainly designed for use with the go_to_page(page) method. It parses the XML
+    # and returns the total number of pages that exist for this result set.
+    def get_total_pages
+      list = @parsed_response["#{@collection}List"]
+      @total_pages = (list['total_results'].to_f/list['page_size'].to_f).ceil
+    end
+    
     private
     # Check the results for an error message. If one exists, raise an ISBNdb::AccessKeyError for now.
     # Currently the API does not differentiate between an overloaded API key and an invalid one
@@ -81,13 +92,6 @@ module ISBNdb
     # of #{@collection}Data. These results are all pushed into the @results array for accessing.
     def build_results
       @results = (@parsed_response["#{@collection}List"]["#{@collection}Data"] || []).collect{ |json| Result.new(json) }
-    end
-
-    # This helper method is mainly designed for use with the go_to_page(page) method. It parses the XML
-    # and returns the total number of pages that exist for this result set.
-    def get_total_pages
-      list = @parsed_response["#{@collection}List"]
-      @total_pages = (list['total_results'].to_f/list['page_size'].to_f).ceil
     end
   end
 end
