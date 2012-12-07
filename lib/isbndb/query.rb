@@ -24,12 +24,12 @@ module ISBNdb
       searches = []
       params[:where].each_with_index do |(key,val), i|
         searches << "index#{i+1}=#{key.to_s.strip}"
-        searches << "value#{i+1}=#{val.to_s.strip}"
+        searches << "value#{i+1}=#{val.to_s.strip.gsub(' ', '%20')}"
       end
-
+      
       # make the request
       uri = "/#{collection}.xml?access_key=#{access_key_set.current_key}&page_number=#{page_number}&results=#{results.join(',')}&#{searches.join('&')}"
-      ISBNdb::ResultSet.new(uri, collection)
+      ISBNdb::ResultSet.new(uri, collection, page_number)
     rescue ISBNdb::AccessKeyError
       access_key_set.next_key!
       retry unless access_key_set.current_key.nil?

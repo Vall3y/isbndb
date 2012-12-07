@@ -21,7 +21,7 @@ module ISBNdb
       @collection = collection.to_s.titleize.singularize
       @current_page = current_page
       @parsed_response = self.class.get(@uri).parsed_response['ISBNdb']
-      
+            
       check_results
       build_results
     end
@@ -50,7 +50,7 @@ module ISBNdb
     def go_to_page(page)
       get_total_pages unless @total_pages
       return nil if page.to_i < 1 || page.to_i > @total_pages
-      ISBNdb::ResultSet.new("#{@uri}&page_number=#{page}", @collection, page)
+      ISBNdb::ResultSet.new(@uri.gsub(/&page_number=\d+/, "&page_number=#{page}"), @collection, page)
     end
 
     # Go to the next page. This method will return nil if a next page does not exist.
