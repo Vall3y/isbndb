@@ -18,6 +18,8 @@ module ISBNdb
       results = params[:results] ||= :details
       results = [results].flatten
 
+      page_number = params[:page_number] || 1
+
       # build the search clause
       searches = []
       params[:where].each_with_index do |(key,val), i|
@@ -26,7 +28,7 @@ module ISBNdb
       end
 
       # make the request
-      uri = "/#{collection}.xml?access_key=#{access_key_set.current_key}&results=#{results.join(',')}&#{searches.join('&')}"
+      uri = "/#{collection}.xml?access_key=#{access_key_set.current_key}&page_number=#{page_number}&results=#{results.join(',')}&#{searches.join('&')}"
       ISBNdb::ResultSet.new(uri, collection)
     rescue ISBNdb::AccessKeyError
       access_key_set.next_key!
