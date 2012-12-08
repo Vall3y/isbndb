@@ -24,7 +24,7 @@ module ISBNdb
       searches = []
       params[:where].each_with_index do |(key,val), i|
         searches << "index#{i+1}=#{key.to_s.strip}"
-        searches << "value#{i+1}=#{val.to_s.strip.gsub(' ', '%20')}"
+        searches << "value#{i+1}=#{val.to_s.strip}"
       end
       
       # make the request

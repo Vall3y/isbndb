@@ -17,7 +17,7 @@ module ISBNdb
     # messages. An ISBNdb::AccessKeyError will be raised if the results contain any errors.
     # Finally, this method then actually builds the ResultSet.
     def initialize(uri, collection, current_page = 1)
-      @uri = URI.escape(uri)
+      @uri = URI.escape(uri.gsub('%20', ' '))
       @collection = collection.to_s.titleize.singularize
       @current_page = current_page
       @parsed_response = self.class.get(@uri).parsed_response['ISBNdb']
